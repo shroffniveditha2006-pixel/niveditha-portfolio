@@ -5,7 +5,6 @@ import {
   Mail,
   ExternalLink,
   Code2,
-  Brain,
   Globe,
   Server,
   Database,
@@ -20,17 +19,18 @@ import {
   GraduationCap,
   BookOpen,
   School,
+  X,
+  Download,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useReveal } from "./use-reveal";
 
 const skills = [
-  { icon: Code2, title: "Programming", items: ["Python", "TypeScript", "C (Basics)"] },
-  { icon: Brain, title: "AI / ML", items: ["PyTorch", "NLP", "OpenCV"] },
-  { icon: Globe, title: "Web", items: ["React", "Next.js", "Tailwind CSS"] },
-  { icon: Server, title: "Backend", items: ["Node.js", "REST APIs"] },
-  { icon: Database, title: "Databases", items: ["MySQL", "Firebase", "SQLite"] },
-  { icon: Wrench, title: "Tools", items: ["Git", "GitHub", "VS Code"] },
+  { icon: Code2, title: "Programming Languages", items: ["Java", "Python (Basics)"] },
+  { icon: Globe, title: "Frontend", items: ["HTML5", "CSS3", "JavaScript", "React", "Next.js", "Tailwind CSS"] },
+  { icon: Server, title: "Backend", items: ["Spring Boot (Basics)", "JDBC", "REST APIs"] },
+  { icon: Database, title: "Databases", items: ["SQL", "MySQL", "Firebase"] },
+  { icon: Wrench, title: "Tools & Platforms", items: ["Git", "GitHub", "VS Code", "IntelliJ IDEA"] },
 ];
 
 const projects = [
@@ -39,50 +39,43 @@ const projects = [
     subtitle: "AI Career Guidance Platform",
     badge: "SIH 2025 Winner",
     description:
-      "An AI-powered career guidance platform that generates personalized career paths based on user input using intelligent processing and real-time data handling.",
-    tech: ["Next.js", "TypeScript", "Firebase", "Tailwind CSS"],
+      "A responsive full-stack web application for personalized career guidance and recommendation generation. Integrated Firebase authentication, REST APIs, and scalable frontend architecture for efficient user management and data handling.",
+    tech: ["Next.js", "TypeScript", "Firebase", "Google Genkit", "Tailwind CSS"],
     live: "https://sih-final-imps.vercel.app/",
     code: "https://github.com/shroffniveditha2006-pixel/EdupathNavigator",
   },
   {
-    title: "VoteGuide",
-    subtitle: "Smart Election Assistant",
+    title: "Smart Resume Analyzer",
+    subtitle: "Full-Stack Resume Analysis Tool",
     description:
-      "An AI-powered platform that simplifies the election process by guiding users through eligibility, registration, and voting steps with an accessible and user-friendly interface.",
-    tech: ["React", "TypeScript", "Tailwind CSS", "Firebase"],
-    live: "https://voteguide-two.vercel.app",
-    code: "https://github.com/shroffniveditha2006-pixel/Voteguide",
-  },
-  {
-    title: "AI Resume Analyzer",
-    subtitle: "NLP-based Career Tool",
-    description:
-      "NLP-based application that analyzes resumes and provides skill-based feedback, keyword matching, and improvement suggestions for better job alignment.",
-    tech: ["Python", "Streamlit", "spaCy", "Scikit-learn"],
+      "Developed a full-stack web application to analyze resumes and match candidate skills with job descriptions. Built backend modules using Java, Spring Boot, and MySQL for operations and data management, and designed responsive user interfaces with REST APIs.",
+    tech: ["Java", "Spring Boot", "MySQL", "HTML5", "CSS3", "JavaScript"],
     live: null,
-    code: null,
+    code: "https://github.com/shroffniveditha2006-pixel",
   },
 ];
 
 const achievements = [
-  { icon: Trophy, title: "Smart India Hackathon 2025 Winner", note: "National-level winning team" },
-  { icon: Award, title: "Gold Medal — Best Performer of the Year", note: "College Level" },
-  { icon: Sparkles, title: "4th Place — College Hackathon", note: "Innovation track" },
-  { icon: Award, title: "Best Idea Presentation", note: "National Level Symposium" },
+  { icon: Trophy, title: "Winner — Smart India Hackathon 2025", note: "National-Level Competition" },
+  { icon: Award, title: "Awarded Gold Medal — Best Performer of the Year 2025", note: "College Level for Overall Contribution" },
+  { icon: Award, title: "Awarded Best Idea Presentation", note: "National Level Symposium" },
+  { icon: Sparkles, title: "Secured 4th Place", note: "Internal College Hackathon 2025" },
 ];
 
 const education = [
-  { icon: School, school: "AP Model School", degree: "Secondary Education (10th Grade)", score: "98%", period: "Completed", current: false },
-  { icon: BookOpen, school: "SR Educational Academy", degree: "Intermediate (12th Grade)", score: "98.6%", period: "Completed", current: false },
-  { icon: GraduationCap, school: "Kalasalingam Academy of Research and Education", degree: "B.Tech in Computer Science (AI/ML)", score: "Current CGPA: 8.97", period: "Ongoing", current: true },
+  { icon: School, school: "AP Model High School, Rayadurgam", degree: "Secondary Education (10th Grade)", score: "98%", period: "2020 – 2021", current: false },
+  { icon: BookOpen, school: "SR Educational Academy, Anantapur", degree: "Intermediate (12th Grade)", score: "98.6%", period: "2021 – 2023", current: false },
+  { icon: GraduationCap, school: "Kalasalingam Academy of Research and Education, Madurai", degree: "B.Tech in Computer Science and Engineering (AI & ML)", score: "CGPA: 8.98", period: "2023 – Expected 2027", current: true },
 ];
 
 export default function App() {
   const rootRef = useReveal();
+  const [resumeModalOpen, setResumeModalOpen] = useState(false);
+
   return (
     <div ref={rootRef} className="min-h-screen bg-background text-foreground">
-      <Nav />
-      <Hero />
+      <Nav onOpenResume={() => setResumeModalOpen(true)} />
+      <Hero onOpenResume={() => setResumeModalOpen(true)} />
       <About />
       <Skills />
       <Projects />
@@ -91,11 +84,12 @@ export default function App() {
       <Achievements />
       <Contact />
       <Footer />
+      {resumeModalOpen && <ResumeModal onClose={() => setResumeModalOpen(false)} />}
     </div>
   );
 }
 
-function Nav() {
+function Nav({ onOpenResume }: { onOpenResume: () => void }) {
   const links: [string, string][] = [
     ["About", "#about"], ["Skills", "#skills"], ["Projects", "#projects"],
     ["Education", "#education"], ["Experience", "#experience"], ["Contact", "#contact"],
@@ -110,21 +104,21 @@ function Nav() {
   return (
     <header className={`fixed top-0 inset-x-0 z-50 backdrop-blur-xl transition-all duration-300 ${scrolled ? "bg-background/80 border-b border-border/60 shadow-soft" : "bg-background/40 border-b border-transparent"}`}>
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <a href="#top" className="font-display font-bold tracking-tight">niveditha<span className="text-primary">.</span></a>
+        <a href="#top" className="font-display font-bold tracking-tight text-lg">niveditha<span className="text-primary">.</span></a>
         <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
           {links.map(([l, h]) => (
             <a key={h} href={h} className="hover:text-foreground transition-colors">{l}</a>
           ))}
         </nav>
-        <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="hidden sm:inline-flex items-center gap-1.5 text-sm rounded-full border border-border px-4 py-1.5 hover:bg-secondary transition-colors">
-          Resume <ArrowUpRight className="h-3.5 w-3.5" />
-        </a>
+        <button onClick={onOpenResume} className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium rounded-full border border-border bg-card/60 px-4 py-1.5 hover:bg-secondary hover:border-primary/40 transition-colors">
+          Resume <FileText className="h-3.5 w-3.5 text-primary" />
+        </button>
       </div>
     </header>
   );
 }
 
-function Hero() {
+function Hero({ onOpenResume }: { onOpenResume: () => void }) {
   const [offset, setOffset] = useState(0);
   useEffect(() => {
     const onScroll = () => setOffset(Math.min(window.scrollY, 400));
@@ -139,7 +133,7 @@ function Hero() {
         <div>
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs text-muted-foreground mb-6">
             <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-            Available for opportunities
+            Available for software opportunities
           </div>
           <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground mb-3">Hello, I'm</p>
           <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.25rem] font-extrabold leading-[1.0] tracking-tight">
@@ -148,7 +142,7 @@ function Hero() {
           </h1>
           <div className="mt-7 flex flex-wrap items-center gap-3">
             <span className="tagline-line inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-1.5 text-sm sm:text-base font-semibold text-primary shadow-glow" style={{ animationDelay: "0.15s" }}>
-              <Sparkles className="h-4 w-4" /> AI/ML Developer
+              <Sparkles className="h-4 w-4" /> Java & Software Developer
             </span>
             <span className="tagline-line inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-sm sm:text-base font-semibold text-accent" style={{ animationDelay: "0.35s" }}>
               <Trophy className="h-4 w-4" /> Smart India Hackathon 2025 Winner
@@ -158,9 +152,9 @@ function Hero() {
             <a href="#projects" className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold hover:opacity-90 hover:-translate-y-0.5 transition-all duration-300 shadow-glow">
               View Projects <ArrowUpRight className="h-4 w-4" />
             </a>
-            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-5 py-2.5 text-sm font-semibold hover:bg-secondary hover:border-primary/40 hover:-translate-y-0.5 transition-all duration-300">
-              <FileText className="h-4 w-4" /> View Resume
-            </a>
+            <button onClick={onOpenResume} className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-5 py-2.5 text-sm font-semibold hover:bg-secondary hover:border-primary/40 hover:-translate-y-0.5 transition-all duration-300">
+              <FileText className="h-4 w-4 text-primary" /> View Resume
+            </button>
             <a href="#contact" className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-semibold hover:bg-secondary hover:border-accent/40 hover:-translate-y-0.5 transition-all duration-300">
               Contact Me
             </a>
@@ -176,6 +170,65 @@ function Hero() {
         </div>
       </div>
     </section>
+  );
+}
+
+function ResumeModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-background/80 backdrop-blur-md animate-fade-in">
+      <div className="relative w-full max-w-4xl h-[85vh] flex flex-col rounded-2xl border border-border bg-card shadow-2xl overflow-hidden">
+        {/* Modal Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card/90">
+          <div className="flex items-center gap-3">
+            <FileText className="h-5 w-5 text-primary" />
+            <div>
+              <h3 className="font-semibold text-foreground">S Niveditha Krishna — Resume</h3>
+              <p className="text-xs text-muted-foreground">Updated Resume PDF</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <a
+              href="/resume.pdf"
+              download="S_Niveditha_Krishna_Resume.pdf"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-lg bg-primary text-primary-foreground px-3 py-1.5 hover:opacity-90 transition"
+            >
+              <Download className="h-3.5 w-3.5" /> Download PDF
+            </a>
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold rounded-lg border border-border px-3 py-1.5 hover:bg-secondary transition"
+            >
+              <ExternalLink className="h-3.5 w-3.5" /> Open Tab
+            </a>
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Modal Body */}
+        <div className="flex-1 bg-secondary/30 relative">
+          <iframe
+            src="/resume.pdf"
+            title="S Niveditha Krishna Resume PDF"
+            className="w-full h-full border-none"
+          />
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -210,21 +263,21 @@ function About() {
           <div className="absolute -bottom-20 -left-10 h-48 w-48 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
           <div className="relative space-y-5 text-muted-foreground leading-relaxed">
             <p className="text-lg md:text-xl text-foreground/95 font-medium">
-              Hi, I'm <span className="text-gradient font-semibold">S Niveditha Krishna</span> — a Computer Science undergraduate exploring the craft of <span className="text-primary font-semibold">Artificial Intelligence</span> and <span className="text-accent font-semibold">Machine Learning</span>.
+              Hi, I'm <span className="text-gradient font-semibold">S Niveditha Krishna</span> — a Computer Science and Engineering undergraduate with a strong interest in <span className="text-primary font-semibold">Software Development</span> and <span className="text-accent font-semibold">Java Application Development</span>.
             </p>
             <p>
-              My journey began with a simple curiosity: <em>how can machines understand the messiness of real life?</em> That question pulled me deep into Python, data, and modern ML — and quickly turned into a habit of shipping things that actually work.
+              I have hands-on experience gained through academic and personal projects involving full-stack web applications, databases, and modern web technologies. I bring a strong foundation in programming, problem-solving, and a continuous drive to learn and adapt to new technologies.
             </p>
             <p>
-              That same drive took our team to <span className="text-primary font-semibold">Smart India Hackathon 2025</span>, where we won at the national level. Today I'm focused on building AI that's useful, honest, and a little more human — and on growing the community that makes it possible through IEEE SMC.
+              Our team won the national-level <span className="text-primary font-semibold">Smart India Hackathon 2025</span> for developing an AI-powered career guidance platform. I am actively seeking opportunities to contribute to a collaborative technology environment and grow as a software professional.
             </p>
           </div>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-1 gap-4">
           {[
-            { icon: Sparkles, label: "Focus", value: "AI / ML & Full-Stack" },
+            { icon: Sparkles, label: "Focus", value: "Software Dev & Java Applications" },
             { icon: Trophy, label: "Highlight", value: "SIH 2025 National Winner" },
-            { icon: GraduationCap, label: "Currently", value: "B.Tech CSE · CGPA 8.97" },
+            { icon: GraduationCap, label: "Currently", value: "B.Tech CSE (AI & ML) · CGPA 8.98" },
           ].map(({ icon: Icon, label, value }, idx) => (
             <div key={label} className="reveal flex items-center gap-4 rounded-2xl border border-border bg-card/60 p-5 hover:border-primary/40 hover:-translate-y-0.5 transition-all duration-300 shadow-soft" style={{ transitionDelay: `${idx * 80}ms` }}>
               <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-primary/25 to-accent/20 border border-primary/30 flex items-center justify-center text-primary shrink-0">
@@ -355,14 +408,13 @@ function Experience() {
             <div className="h-11 w-11 rounded-xl bg-secondary flex items-center justify-center text-primary shrink-0"><Briefcase className="h-5 w-5" /></div>
             <div className="flex-1">
               <div className="flex flex-wrap items-baseline gap-x-3">
-                <h3 className="text-lg font-semibold">AI Intern</h3>
+                <h3 className="text-lg font-semibold">Infosys Springboard</h3>
                 <span className="text-muted-foreground">·</span>
-                <p className="text-muted-foreground">Launched Global</p>
+                <p className="text-muted-foreground">Pragati Cohort 9 (2026)</p>
               </div>
               <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-                <li className="flex gap-3"><span className="mt-2 h-1 w-1 rounded-full bg-primary shrink-0" />Worked on Python-based AI applications</li>
-                <li className="flex gap-3"><span className="mt-2 h-1 w-1 rounded-full bg-primary shrink-0" />Built recommendation logic</li>
-                <li className="flex gap-3"><span className="mt-2 h-1 w-1 rounded-full bg-primary shrink-0" />Assisted in data preprocessing and testing</li>
+                <li className="flex gap-3"><span className="mt-2 h-1 w-1 rounded-full bg-primary shrink-0" />Participated in a structured industry-oriented learning program focused on developing technical and professional skills</li>
+                <li className="flex gap-3"><span className="mt-2 h-1 w-1 rounded-full bg-primary shrink-0" />Gained practical exposure through hands-on learning activities and technology-focused coursework</li>
               </ul>
             </div>
           </div>
@@ -374,11 +426,11 @@ function Experience() {
               <div className="flex flex-wrap items-baseline gap-x-3">
                 <h3 className="text-lg font-semibold">Core Member</h3>
                 <span className="text-muted-foreground">·</span>
-                <p className="text-muted-foreground">IEEE SMC Club</p>
+                <p className="text-muted-foreground">IEEE SMC Club (Jan 2026 – Present)</p>
               </div>
               <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-                <li className="flex gap-3"><span className="mt-2 h-1 w-1 rounded-full bg-accent shrink-0" />Organized technical workshops</li>
-                <li className="flex gap-3"><span className="mt-2 h-1 w-1 rounded-full bg-accent shrink-0" />Coordinated student events</li>
+                <li className="flex gap-3"><span className="mt-2 h-1 w-1 rounded-full bg-accent shrink-0" />Organized technical workshops and student events</li>
+                <li className="flex gap-3"><span className="mt-2 h-1 w-1 rounded-full bg-accent shrink-0" />Assisted in planning and coordination of club activities</li>
               </ul>
             </div>
           </div>
@@ -414,7 +466,7 @@ function Contact() {
     <Section id="contact" eyebrow="Contact" title="Let's build something together.">
       <div className="rounded-2xl border border-border bg-card/60 p-6 md:p-10 shadow-soft space-y-8">
         <p className="text-muted-foreground max-w-2xl">
-          Open to internships, collaborations, and interesting AI/ML problems. Reach out through any of these — I usually reply within a day.
+          Open to internships, software development roles, and interesting technology problems. Reach out through any of these — I usually reply within a day.
         </p>
         <div className="grid sm:grid-cols-3 gap-4">
           {[
@@ -456,7 +508,7 @@ function Contact() {
           </div>
           <div>
             <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Message</label>
-            <textarea name="message" required rows={5} className="w-full rounded-lg bg-input/40 border border-border px-3 py-2.5 text-sm focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition resize-none" placeholder="Tell me about your project or idea…" />
+            <textarea name="message" required rows={5} className="w-full rounded-lg bg-input/40 border border-border px-3 py-2.5 text-sm focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/20 transition resize-none" placeholder="Tell me about your project or opportunity…" />
           </div>
           <button type="submit" className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold hover:opacity-90 transition shadow-glow">
             <Send className="h-4 w-4" /> Send Message
