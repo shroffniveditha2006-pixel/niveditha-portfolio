@@ -234,18 +234,12 @@ function ResumeModal({ onClose }: { onClose: () => void }) {
 
 function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: React.ReactNode }) {
   return (
-    <section id={id} className="py-20 md:py-28">
+    <section id={id} className="py-20 md:py-28 relative">
       <div className="max-w-6xl mx-auto px-6">
         <div className="reveal mb-12 max-w-2xl">
-          <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-3">{eyebrow}</p>
-          <h2 className="text-3xl md:text-4xl font-bold">
-            <span className="text-gradient" aria-label={title}>
-              {title.split("").map((ch, i) => (
-                <span key={i} aria-hidden className="jump-letter" style={{ animationDelay: `${i * 35}ms` }}>
-                  {ch === " " ? "\u00A0" : ch}
-                </span>
-              ))}
-            </span>
+          <p className="text-xs uppercase tracking-[0.2em] text-primary font-bold mb-3">{eyebrow}</p>
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            <span className="text-gradient">{title}</span>
           </h2>
         </div>
         {children}

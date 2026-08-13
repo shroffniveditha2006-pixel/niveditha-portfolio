@@ -7,6 +7,12 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>() {
     if (!el) return;
     const targets = el.querySelectorAll<HTMLElement>(".reveal");
     if (targets.length === 0) return;
+
+    if (typeof IntersectionObserver === "undefined") {
+      targets.forEach((t) => t.classList.add("is-visible"));
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -16,9 +22,18 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>() {
           }
         });
       },
-      { threshold: 0.15, rootMargin: "0px 0px -60px 0px" }
+      { threshold: 0.02, rootMargin: "100px 0px 50px 0px" }
     );
-    targets.forEach((t) => observer.observe(t));
+
+    targets.forEach((t) => {
+      const rect = t.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 100 && rect.bottom > -50) {
+        t.classList.add("is-visible");
+      } else {
+        observer.observe(t);
+      }
+    });
+
     return () => observer.disconnect();
   }, []);
   return ref;
